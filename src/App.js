@@ -27,10 +27,10 @@ function App() {
 
   useEffect(() => {
     getStatus();
-  });
+  },[]);
 
   const handleStart = async () => {
-    setfetchStatus(false);
+    await setfetchStatus(false);
     axios
       .get(
         "https://asia-southeast1-planar-truck-302513.cloudfunctions.net/startCodeServer"
@@ -47,7 +47,7 @@ function App() {
   };
 
   const handleStop = async () => {
-    setfetchStatus(false);
+    await setfetchStatus(false);
     axios
       .get(
         "https://asia-southeast1-planar-truck-302513.cloudfunctions.net/stopCodeServer"
