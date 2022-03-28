@@ -5,6 +5,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
 import StopCircleIcon from "@mui/icons-material/StopCircle";
 import axios from "axios";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from '@mui/material/Box';
 function App() {
   const [status, setstatus] = useState(false);
   const [fetchStatus, setfetchStatus] = useState(false);
@@ -27,7 +29,7 @@ function App() {
 
   useEffect(() => {
     getStatus();
-  },[]);
+  }, []);
 
   const handleStart = async () => {
     await setfetchStatus(false);
@@ -67,25 +69,34 @@ function App() {
     <div className="App">
       <header className="App-header">
         <div className="container">
-
-          <a className="text-reset text-decoration-none row fw-bold display-1 justify-content-center my-4" href ={"https://vs.thunthup.me:8080"}>
-            CODE SERVER
+          <a
+            className="text-reset text-decoration-none row fw-bold display-1 justify-content-center my-4"
+            href={"https://vs.thunthup.me:8080"}
+          >
+            CODE SERVER 
           </a>
-          <div className="row my-4 "/>
+          <div className="row my-4 " />
           {fetchStatus ? (
             <div className="row m-3 mb-4 text-center">
               Status: {status ? "Instance running" : "Instance stopped"}
             </div>
           ) : (
-            <div className="row m-3 mb-4 text-center">getting status .....</div>
+            <div className="row m-3 mb-4 text-center">
+              
+              <Box sx={{ display: "flex", margin:0 ,padding:0 }}>
+              Status:&nbsp;&nbsp;<CircularProgress />
+              </Box>
+            </div>
           )}
-
+          
           <div className="row">
             <Button
               className="col mx-4"
               variant="contained"
               startIcon={<PlayCircleFilledIcon />}
               onClick={() => handleStart()}
+              disabled={!fetchStatus || status}
+              size = "large"
             >
               Start
             </Button>
@@ -95,6 +106,8 @@ function App() {
               endIcon={<StopCircleIcon />}
               color="error"
               onClick={() => handleStop()}
+              disabled={!fetchStatus || !status}
+              size="large"
             >
               Stop
             </Button>
