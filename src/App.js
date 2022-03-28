@@ -1,63 +1,91 @@
 import "./App.css";
 import Button from "@mui/material/Button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import PlayCircleFilledIcon from "@mui/icons-material/PlayCircleFilled";
 import StopCircleIcon from "@mui/icons-material/StopCircle";
 import axios from "axios";
 function App() {
   const [status, setstatus] = useState(false);
-  const [fetchStatus, setfetchStatus] = useState(false)
-  axios.get('https://asia-southeast1-planar-truck-302513.cloudfunctions.net/getCodeServerStatus')
-  .then(function (response) {
-    setstatus(response.data)
-    setfetchStatus(true)
-    console.log(response.data);
-  })
-  .catch(function (error) {
-    // handle error
-    console.log(error);
-  })
+  const [fetchStatus, setfetchStatus] = useState(false);
+
+  const getStatus = async () => {
+    axios
+      .get(
+        "https://asia-southeast1-planar-truck-302513.cloudfunctions.net/getCodeServerStatus"
+      )
+      .then(function (response) {
+        setstatus(response.data);
+        setfetchStatus(true);
+        console.log(response.data);
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    getStatus();
+  });
 
   const handleStart = async () => {
-    axios.get('https://asia-southeast1-planar-truck-302513.cloudfunctions.net/startCodeServer')
-  .then(function (response) {
-    console.log("start")
-    console.log(response);
-  })
-  .catch(function (error) {
-    // handle error
-    console.log(error);
-  })
-  }
+    setfetchStatus(false);
+    axios
+      .get(
+        "https://asia-southeast1-planar-truck-302513.cloudfunctions.net/startCodeServer"
+      )
+      .then(function (response) {
+        console.log("start");
+        console.log(response);
+        getStatus();
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error);
+      });
+  };
 
   const handleStop = async () => {
-    axios.get('https://asia-southeast1-planar-truck-302513.cloudfunctions.net/stopCodeServer')
-  .then(function (response) {
-    console.log("stop")
-    console.log(response);
-  })
-  .catch(function (error) {
-    // handle error
-    console.log(error);
-  })
-  }
+    setfetchStatus(false);
+    axios
+      .get(
+        "https://asia-southeast1-planar-truck-302513.cloudfunctions.net/stopCodeServer"
+      )
+      .then(function (response) {
+        console.log("stop");
+        getStatus();
+        console.log(response);
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error);
+      });
+  };
 
-  
   return (
     <div className="App">
       <header className="App-header">
         <div className="container">
 
-          {fetchStatus ? <div className="row m-3 mb-4 text-center">Status: {status ? "Instance running" : "Instance stopped"}</div> : 
-          <div className="row m-3 mb-4 text-center">getting status .....</div>}
+          <a className="text-reset text-decoration-none row fw-bold display-1 justify-content-center my-4" href ={"https://vs.thunthup.me:8080"}>
+            CODE SERVER
+          </a>
+          <div className="row my-4 "/>
+          {fetchStatus ? (
+            <div className="row m-3 mb-4 text-center">
+              Status: {status ? "Instance running" : "Instance stopped"}
+            </div>
+          ) : (
+            <div className="row m-3 mb-4 text-center">getting status .....</div>
+          )}
 
           <div className="row">
             <Button
               className="col mx-4"
               variant="contained"
-              startIcon={<PlayCircleFilledIcon/>} 
-              onClick = {() => handleStart()}
+              startIcon={<PlayCircleFilledIcon />}
+              onClick={() => handleStart()}
             >
               Start
             </Button>
@@ -66,7 +94,7 @@ function App() {
               variant="contained"
               endIcon={<StopCircleIcon />}
               color="error"
-              onClick = {() => handleStop() }
+              onClick={() => handleStop()}
             >
               Stop
             </Button>
